@@ -13,9 +13,19 @@ public class Organization {
 
     private List<ConferenceRoom> conferenceRooms = new LinkedList<>();
 
-    @UniqueElements(message = "This organization name already exists.")
-    @Size(min = 2, max = 20, message = "Name should be more than 1 and less than 21 characters without white signs.")
     private String name;
 
+    public boolean addRoom(ConferenceRoom conferenceRoom) {
+        for (ConferenceRoom c : conferenceRooms) {
+            if (c.getName().equals(conferenceRoom.getName().trim()) || c.getId().equals(conferenceRoom.getName().trim())) {
+                return false;
+            }
+        }
+
+        conferenceRoom.setName(conferenceRoom.getName().trim());
+        conferenceRoom.setId(conferenceRoom.getId().trim());
+        conferenceRooms.add(conferenceRoom);
+        return true;
+    }
 
 }
