@@ -1,7 +1,8 @@
 package pl.mkolasinski.Quest1.Model.conferenceRoom;
 
 public enum PhoneInterface {
-    USB(0, "USB"), BLUETOOTH(1, "bluetooth");
+    USB(0, "USB"), BLUETOOTH(1, "bluetooth"),
+    NO_INTERFACE(2, "No interface");
 
     private int phoneInterfaceId;
     private String phoneInterfaceName;

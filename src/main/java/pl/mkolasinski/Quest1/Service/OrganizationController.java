@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mkolasinski.Quest1.Model.conferenceRoom.ConferenceRoom;
 import pl.mkolasinski.Quest1.Model.organization.Organization;
 
+import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,9 +39,9 @@ public class OrganizationController {
     }
 
     @RequestMapping(value = "/addroom", method = RequestMethod.POST)
-    public ResponseEntity<HttpStatus> addRoom(@RequestParam(value = "id") String id, @RequestBody ConferenceRoom conferenceRoom) {
+    public ResponseEntity<HttpStatus> addRoom(@RequestParam(value = "id") String id, @RequestBody @Valid ConferenceRoom conferenceRoom) {
         for (Organization o : organizationsList) {
-            if (o.getName().equals(id)) {
+            if (o.getName().toLowerCase().equals(id.toLowerCase())) {
                 o.addRoom(conferenceRoom);
                 return new ResponseEntity<>(HttpStatus.CREATED);
             }
