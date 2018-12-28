@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 @Data
 public class Organization {
 
-    private List<ConferenceRoom> conferenceRooms = new LinkedList<>();
-
     @NotNull
     @Length(min = 2, max = 20, message = "Organization name should be between 2 and 20 characters.")
     private String name;
+
+    private List<ConferenceRoom> conferenceRooms = new LinkedList<>();
 
     public boolean addRoom(ConferenceRoom conferenceRoom) {
         for (ConferenceRoom c : conferenceRooms) {
