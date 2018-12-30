@@ -9,6 +9,6 @@ import javax.validation.constraints.NotNull;
 public class NewName {
 
     @NotNull
-    @Length(min = 2, max = 20, message = "New name should be betweetn 2 and 20 characters")
+    @Length(min = 2, max = 20, message = "New name should be between 2 and 20 characters")
     private String name;
 }
