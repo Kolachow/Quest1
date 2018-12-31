@@ -233,7 +233,7 @@ public class OrganizationController {
 
         for (Reservation r : reservationsList) {                            //searching reservation list
 
-            if (r.getRoomName().equals(reservation.getRoomName())) {                         //searching reservation to change
+            if (r.getRoomName().equals(reservation.getRoomName())) {        //searching reservation to change
 
                 for (Organization o : organizationsList) {                  //searching conference room with name to change
                     for (ConferenceRoom c : o.getConferenceRooms()) {
@@ -243,8 +243,7 @@ public class OrganizationController {
                             reservationsList.remove(r);                     //remove old reservation
                             c.setAvailability(true);                        //set availability of the room to free
 
-                            book(reservation);
-                            return new ResponseEntity<>("Reservation has been changed.", HttpStatus.OK);
+                            return book(reservation);
                         }
                     }
                 }
