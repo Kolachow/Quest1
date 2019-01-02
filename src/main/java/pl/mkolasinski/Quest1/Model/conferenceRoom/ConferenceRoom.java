@@ -1,10 +1,7 @@
 package pl.mkolasinski.Quest1.Model.conferenceRoom;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.*;
 

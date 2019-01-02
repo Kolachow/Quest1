@@ -26,7 +26,7 @@ public class OrganizationController {
     private GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
     private Gson gson = gsonBuilder.create();
 
-//organizations CRUD
+    //organizations CRUD
     @RequestMapping(value = "/organization", method = RequestMethod.POST)                                       //add Organization
     public ResponseEntity<?> addOrganization(@RequestBody @Valid Organization organization) {
         for (Organization o : organizationsList) {
@@ -56,15 +56,13 @@ public class OrganizationController {
 
     @RequestMapping(value = "/organizationrooms", method = RequestMethod.GET)                                   //show Conference Rooms of one specified Organization
     public ResponseEntity<?> showOrganizationRooms(@RequestParam(value = "id") String organizationName) {
-        Organization organization = new Organization();
         for (Organization o : organizationsList) {
             if (o.getName().equals(organizationName)) {
-                organization = o;
-                break;
+                String organizationJson = gson.toJson(o);
+                return new ResponseEntity<>(organizationJson, HttpStatus.OK);
             }
         }
-        String organizationJson = gson.toJson(organization);
-        return new ResponseEntity<>(organizationJson, HttpStatus.OK);
+        return new ResponseEntity<>("There is no such organization.", HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/organization", method = RequestMethod.PUT)                                        //modify Organization
@@ -81,25 +79,28 @@ public class OrganizationController {
     }
     @RequestMapping(value = "/organization", method = RequestMethod.DELETE)                                     //delete Organization
     public ResponseEntity<?> deleteOrganization(@RequestParam(value = "id") String organizationName) {
-        for (Organization o : organizationsList) {
+        for (Organization organization : organizationsList) {
 
-            if (o.getName().equals(organizationName)) {
-                for (ConferenceRoom conRoom : o.getConferenceRooms()) {
+            if (organization.getName().equals(organizationName)) {
+                for (ConferenceRoom conRoom : organization.getConferenceRooms()) {
                     for (Reservation res : reservationsList) {
                         if (res.getRoomName().equals(conRoom.getName())) {
+                            roomsNames.remove(conRoom.getName());
+                            roomsIds.remove(conRoom.getId());
                             reservationsList.remove(res);
                         }
                     }
                 }
 
-                organizationsList.remove(o);
+                organizationsList.remove(organization);
+
                 return new ResponseEntity<>("Organization has been removed.", HttpStatus.OK);
             }
         }
         return new ResponseEntity<>("Organization does not exist", HttpStatus.BAD_REQUEST);
     }
 
-//Conference room CRUD
+    //Conference room CRUD
     @RequestMapping(value = "/room", method = RequestMethod.POST)                                               //add Conference Room
     public ResponseEntity<?> addRoom(@RequestParam(value = "id") String orgName, @RequestBody @Valid ConferenceRoom conferenceRoom) {
         for (Organization o : organizationsList) {
@@ -183,7 +184,7 @@ public class OrganizationController {
         return new ResponseEntity<>("This name does not exist in the system.", HttpStatus.BAD_REQUEST);
     }
 
-//reservation CRUD
+    //reservation CRUD
     @RequestMapping(value = "/reservation", method = RequestMethod.POST)                                        //book / add reservation
     public ResponseEntity<?> book(@RequestBody @Valid Reservation reservation) {
         for (Reservation r : reservationsList) {
@@ -262,7 +263,7 @@ public class OrganizationController {
     }
 
 
-//General
+    //General
     @RequestMapping(value = "/allrooms", method = RequestMethod.GET)                                            //SHow all Organizations and their rooms
     public ResponseEntity<?> showAllRooms() {
         String organizationsListJson = gson.toJson(organizationsList);

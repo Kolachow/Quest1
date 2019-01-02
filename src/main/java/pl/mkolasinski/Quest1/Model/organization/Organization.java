@@ -5,11 +5,8 @@ import org.hibernate.validator.constraints.Length;
 import pl.mkolasinski.Quest1.Model.conferenceRoom.ConferenceRoom;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Data
 public class Organization {
