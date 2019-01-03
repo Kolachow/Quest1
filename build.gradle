@@ -33,9 +33,3 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.4'
 	annotationProcessor 'org.projectlombok:lombok:1.18.4'
 }
-
-jar {
-	manifest {
-		attributes 'Main-Class': 'pl.mkolasinski.Quest1.Quest1Application'
-	}
-}
