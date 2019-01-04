@@ -12,7 +12,7 @@ import java.util.List;
 public class Organization {
 
     @NotNull
-    @Length(min = 2, max = 20, message = "Organization name should be between 2 and 20 characters.")
+    @Length(min = 2, max = 20, message = "OrganizationS name should be between 2 and 20 characters.")
     private String name;
 
     private List<ConferenceRoom> conferenceRooms = new LinkedList<>();
