@@ -1,5 +1,5 @@
 # Quest1
-/Quest 1 for intive Patronage 2018/2019
+Quest 1 for intive Patronage 2018/2019
 
 ## 1. Building application
 To build application use command:
