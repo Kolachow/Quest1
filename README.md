@@ -15,11 +15,13 @@ To create a conference room you must first create an organization. To do this, u
 
     curl -H "Content-Type: application/json" -d '{"name":"[ORGANIZATION_NAME]"}' localhost:8080/organizations
     
+Where [ORGANIZATION_NAME] is name of new organization.
+    
 ### 3.2 Create a conference room
 To create full conference room, use command:
 
     curl -H "Content-Type: application/json" -d '{"name":"ConfRoomName","id":"1.33","floor":3,"availability":true,"numberOfSeatsAndStanding":15,"numberOfLyingPlaces":3,"numberOfHangingPlaces":1,"projectorName":"Solar","phone":true,"internalNumber":56,"externalNumber":"+12 123456789","phoneInterface":"USB"}' localhost:8080/organizations/[ORGANIZATION_NAME]
-    
+
 **Remember!**
 
 You do not have to use all fields. Mandatory are only: name, floor, availability (default is true) and numberOfSeatsAndStanding. For example:
