@@ -1,14 +1,14 @@
-package pl.mkolasinski.Quest1.Service;
+package pl.mkolasinski.Quest1.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.mkolasinski.Quest1.Model.conferenceRoom.ConferenceRoom;
-import pl.mkolasinski.Quest1.Model.organization.Organization;
-import pl.mkolasinski.Quest1.Model.reservations.NewName;
-import pl.mkolasinski.Quest1.Model.reservations.Reservation;
+import pl.mkolasinski.Quest1.model.conferenceRoom.ConferenceRoom;
+import pl.mkolasinski.Quest1.model.organization.Organization;
+import pl.mkolasinski.Quest1.model.reservations.NewName;
+import pl.mkolasinski.Quest1.model.reservations.Reservation;
 
 import javax.validation.Valid;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ public class OrganizationController {
     private Gson gson = gsonBuilder.create();
 
     //organizations CRUD
-    @RequestMapping(value = "/organization", method = RequestMethod.POST)                                       //add Organization
+    @RequestMapping(value = "/organizations", method = RequestMethod.POST)                                       //add Organization
     public ResponseEntity<?> addOrganization(@RequestBody @Valid Organization organization) {
         for (Organization orgFromList : organizationsList) {
             if (orgFromList.getName().equals(organization.getName().trim())) {
@@ -54,8 +54,8 @@ public class OrganizationController {
         return new ResponseEntity<>(rawOrganizationsListJson, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/organizationrooms", method = RequestMethod.GET)                                   //show Conference Rooms of one specified Organization
-    public ResponseEntity<?> showOrganizationRooms(@RequestParam(value = "id") String organizationName) {
+    @RequestMapping(value = "/organizations/{organizationName}", method = RequestMethod.GET)                                   //show Conference Rooms of one specified Organization
+    public ResponseEntity<?> showOrganizationRooms(@PathVariable String organizationName) {
         for (Organization orgFromList : organizationsList) {
             if (orgFromList.getName().equals(organizationName)) {
                 String organizationJson = gson.toJson(orgFromList);
@@ -65,8 +65,8 @@ public class OrganizationController {
         return new ResponseEntity<>("There is no such organization.", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/organization", method = RequestMethod.PUT)                                        //modify Organization
-    public ResponseEntity<?> changeOrganization(@RequestParam(value = "id") String organizationName,
+    @RequestMapping(value = "/organizations/{organizationName}", method = RequestMethod.PUT)                                        //modify Organization
+    public ResponseEntity<?> changeOrganization(@PathVariable String organizationName,
                                                 @RequestBody @Valid NewName newName) {
         for (Organization orgFromList : organizationsList) {
             if (orgFromList.getName().equals(organizationName)) {
@@ -77,8 +77,8 @@ public class OrganizationController {
 
         return new ResponseEntity<>("This name does not exist.", HttpStatus.BAD_REQUEST);
     }
-    @RequestMapping(value = "/organization", method = RequestMethod.DELETE)                                     //delete Organization
-    public ResponseEntity<?> deleteOrganization(@RequestParam(value = "id") String organizationName) {
+    @RequestMapping(value = "/organizations/{organizationName}", method = RequestMethod.DELETE)                                     //delete Organization
+    public ResponseEntity<?> deleteOrganization(@PathVariable String organizationName) {
         for (Organization orgFromList : organizationsList) {
 
             if (orgFromList.getName().equals(organizationName)) {
@@ -101,10 +101,10 @@ public class OrganizationController {
     }
 
     //Conference room CRUD
-    @RequestMapping(value = "/room", method = RequestMethod.POST)                                               //add Conference Room
-    public ResponseEntity<?> addRoom(@RequestParam(value = "id") String orgName, @RequestBody @Valid ConferenceRoom conferenceRoom) {
+    @RequestMapping(value = "/organizations/{organizationName}", method = RequestMethod.POST)                                               //add Conference Room
+    public ResponseEntity<?> addRoom(@PathVariable String organizationName, @RequestBody @Valid ConferenceRoom conferenceRoom) {
         for (Organization orgFromList : organizationsList) {
-            if (orgFromList.getName().toLowerCase().equals(orgName.toLowerCase())) {
+            if (orgFromList.getName().toLowerCase().equals(organizationName.toLowerCase())) {
                 if (roomsNames.contains(conferenceRoom.getName())) {
                     return new ResponseEntity<>("Room name already exist.", HttpStatus.BAD_REQUEST);
                 } else if (roomsIds.contains(conferenceRoom.getId())) {
@@ -124,11 +124,11 @@ public class OrganizationController {
         return new ResponseEntity<>("Organization name does not exist.", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/room", method = RequestMethod.GET)                                                //show specified Conference Room
-    public ResponseEntity<?> showRoom(@RequestParam(value = "id") String roomName) {
+    @RequestMapping(value = "/organizations/{organizationName}/{roomName}", method = RequestMethod.GET)                                                //show specified Conference Room
+    public ResponseEntity<?> showRoom(@PathVariable String organizationName ,@PathVariable String roomName) {
         for (Organization orgFromList : organizationsList) {
             for (ConferenceRoom roomFromList : orgFromList.getConferenceRooms()) {
-                if (roomFromList.getName().equals(roomName)) {
+                if (roomFromList.getName().equals(roomName) && orgFromList.getName().equals(organizationName)) {
                     String conferenceRoomJson = gson.toJson(roomFromList);
                     return new ResponseEntity<>(conferenceRoomJson, HttpStatus.OK);
                 }
@@ -137,12 +137,12 @@ public class OrganizationController {
         return new ResponseEntity<>("This conference room does not exist.", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/room", method = RequestMethod.DELETE)                                             //delete Conference Room
-    public ResponseEntity<?> deleteRoom(@RequestParam(value = "id") String roomName) {
+    @RequestMapping(value = "/organizations/{organizationName}/{roomName}", method = RequestMethod.DELETE)                                             //delete Conference Room
+    public ResponseEntity<?> deleteRoom(@PathVariable String organizationName, @PathVariable String roomName) {
         for (Organization orgFromList : organizationsList) {
             for (ConferenceRoom roomFromList : orgFromList.getConferenceRooms()) {
 
-                if (roomFromList.getName().equals(roomName)) {
+                if (roomFromList.getName().equals(roomName) && orgFromList.getName().equals(organizationName)) {
                     for(Reservation res : reservationsList) {
                         if (res.getRoomName().equals(roomFromList.getName())) {
                             reservationsList.remove(res);
@@ -160,15 +160,11 @@ public class OrganizationController {
         return new ResponseEntity<>("Conference room does not exist", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/room", method = RequestMethod.PUT)                                                //modify Conference Room
-    public ResponseEntity<?> changeRoom(@RequestParam(value = "id") String roomName, @RequestBody @Valid ConferenceRoom modifiedConferenceRoom) {
+    @RequestMapping(value = "/organizations/{organizationName}/{roomName}", method = RequestMethod.PUT)                                                //modify Conference Room
+    public ResponseEntity<?> changeRoom(@PathVariable String organizationName, @PathVariable String roomName, @RequestBody @Valid ConferenceRoom modifiedConferenceRoom) {
         for (Organization orgFromList : organizationsList) {
             for (ConferenceRoom roomFromList : orgFromList.getConferenceRooms()) {
-                if (roomsNames.contains(modifiedConferenceRoom.getName())) {
-                    return new ResponseEntity<>("This room name already exist in the system", HttpStatus.BAD_REQUEST);
-                } else if (roomsIds.contains(modifiedConferenceRoom.getId())) {
-                    return new ResponseEntity<>("This room ID already exist in the system", HttpStatus.BAD_REQUEST);
-                } else if (roomFromList.getName().equals(roomName)) {
+                if (roomFromList.getName().equals(roomName) && orgFromList.getName().equals(organizationName)) {
                     roomsNames.remove(roomFromList.getName());
                     roomsIds.remove(roomFromList.getId());
                     orgFromList.getConferenceRooms().remove(roomFromList);
@@ -185,7 +181,7 @@ public class OrganizationController {
     }
 
     //reservation CRUD
-    @RequestMapping(value = "/reservation", method = RequestMethod.POST)                                        //book / add reservation
+    @RequestMapping(value = "/reservations", method = RequestMethod.POST)                                        //book / add reservation
     public ResponseEntity<?> book(@RequestBody @Valid Reservation reservation) {
         for (Reservation resFromList : reservationsList) {
             if (resFromList.getClientId().equals(reservation.getClientId())) {
@@ -207,22 +203,27 @@ public class OrganizationController {
         return new ResponseEntity<>("This room does not exist in the system", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/reservations", method = RequestMethod.GET)                                        //show all reservations
-    public ResponseEntity<?> showReservations() {
-        String reservationsListJson = gson.toJson(reservationsList);
-        return new ResponseEntity<>(reservationsListJson, HttpStatus.OK);
+    @RequestMapping(value = "/reservations/{clientId}", method = RequestMethod.GET)                                        //show all reservations
+    public ResponseEntity<?> showReservations(@PathVariable String clientId) {
+        for (Reservation resFromList : reservationsList) {
+            if (resFromList.getClientId().equals(clientId)) {
+                String reservationsListJson = gson.toJson(resFromList);
+                return new ResponseEntity<>(reservationsListJson, HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>("No such reservation.", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/reservation", method = RequestMethod.DELETE)                                      //delete reservation
-    public ResponseEntity<?> deleteReservation(@RequestParam(value = "id") String roomName) {
+    @RequestMapping(value = "/reservations/{clientId}", method = RequestMethod.DELETE)                                      //delete reservation
+    public ResponseEntity<?> deleteReservation(@PathVariable String clientId) {
         for (Reservation resFromList : reservationsList) {
-            if (resFromList.getRoomName().equals(roomName)) {
-                reservationsList.remove(resFromList);
-
+            if (resFromList.getClientId().equals(clientId)) {
                 for (Organization orgFromList : organizationsList) {
                     for (ConferenceRoom roomFromList : orgFromList.getConferenceRooms()) {
-                        if (roomFromList.getName().equals(roomName)) {
+                        if (roomFromList.getName().equals(resFromList.getRoomName())) {
                             roomFromList.setAvailability(true);
+                            reservationsList.remove(resFromList);
                             return new ResponseEntity<>("Reservation has been removed.", HttpStatus.OK);
                         }
                     }
@@ -232,8 +233,8 @@ public class OrganizationController {
         return new ResponseEntity<>("This reservation is not exist.", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/reservation", method = RequestMethod.PUT)                                         //modify reservation
-    public ResponseEntity<?> modifyReservation(@RequestBody @Valid Reservation reservation) {
+    @RequestMapping(value = "/reservations/{clientId}", method = RequestMethod.PUT)                                         //modify reservation
+    public ResponseEntity<?> modifyReservation(@PathVariable String clientId, @RequestBody @Valid Reservation reservation) {
 
         for (Reservation resFromList : reservationsList) {
             if (resFromList.equals(reservation)) {
@@ -243,12 +244,12 @@ public class OrganizationController {
 
         for (Reservation resFromList : reservationsList) {                            //searching reservation list
 
-            if (resFromList.getRoomName().equals(reservation.getRoomName())) {        //searching reservation to change
+            if (resFromList.getClientId().equals(clientId)) {        //searching reservation to change
 
                 for (Organization orgFromList : organizationsList) {                  //searching conference room with name to change
                     for (ConferenceRoom roomFromList : orgFromList.getConferenceRooms()) {
 
-                        if (roomFromList.getName().equals(reservation.getRoomName())) {
+                        if (roomFromList.getName().equals(resFromList.getRoomName())) {
 
                             reservationsList.remove(resFromList);                     //remove old reservation
                             roomFromList.setAvailability(true);                        //set availability of the room to free

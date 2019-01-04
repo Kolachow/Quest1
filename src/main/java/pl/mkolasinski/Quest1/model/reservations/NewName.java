@@ -1,4 +1,4 @@
-package pl.mkolasinski.Quest1.Model.reservations;
+package pl.mkolasinski.Quest1.model.reservations;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

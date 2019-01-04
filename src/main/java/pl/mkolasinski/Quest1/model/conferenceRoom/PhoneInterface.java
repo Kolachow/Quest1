@@ -1,4 +1,4 @@
-package pl.mkolasinski.Quest1.Model.conferenceRoom;
+package pl.mkolasinski.Quest1.model.conferenceRoom;
 
 public enum PhoneInterface {
     USB(0, "USB"), BLUETOOTH(1, "bluetooth"),

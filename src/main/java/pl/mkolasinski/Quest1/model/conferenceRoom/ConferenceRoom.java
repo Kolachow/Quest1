@@ -1,4 +1,4 @@
-package pl.mkolasinski.Quest1.Model.conferenceRoom;
+package pl.mkolasinski.Quest1.model.conferenceRoom;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

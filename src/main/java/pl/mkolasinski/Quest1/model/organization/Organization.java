@@ -1,8 +1,8 @@
-package pl.mkolasinski.Quest1.Model.organization;
+package pl.mkolasinski.Quest1.model.organization;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import pl.mkolasinski.Quest1.Model.conferenceRoom.ConferenceRoom;
+import pl.mkolasinski.Quest1.model.conferenceRoom.ConferenceRoom;
 
 import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
